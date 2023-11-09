@@ -1,8 +1,10 @@
 import express from "express";
-import api from "./server/routes/authorizationRoutes.js";
+import cookies from "cookie-parser";
 import AdminJS from "adminjs";
 import AdminJSExpress from "@adminjs/express";
-import dbconnection from "./server/db/dbconnection.js";
+
+import authorizationRouter from "./server/routes/authorizationRouter.js";
+import userRouter from "./server/routes/userRouter.js";
 
 const PORT = 3000;
 
@@ -11,14 +13,15 @@ const admin = new AdminJS({});
 const adminRouter = AdminJSExpress.buildRouter(admin);
 
 app.use(express.json());
+app.use(cookies());
 app.use(admin.options.rootPath, adminRouter);
-app.use(api);
+
+app.use("/api/auth", authorizationRouter);
+app.use("/api/users", userRouter);
 
 app.get("/", (req, res) => {
   res.send({ message: "Hello WWW!" });
 });
-
-dbconnection.connection();
 
 app.listen(PORT, () => {
   console.log(

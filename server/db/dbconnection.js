@@ -1,8 +1,9 @@
 import mysql from "mysql2";
 import fs from "fs";
 import path from "path";
-import { __dirname } from "path";
 import config from "./config.json" assert { type: "json" };
+import { fileURLToPath } from 'url';
+import { dirname } from "path";
 
 const connection = mysql.createConnection({
   host: config.host,
@@ -16,7 +17,10 @@ connection.connect((error) => {
   if (error) throw error;
   console.log("Successfully connected to the database.");
 
-  const sqlScript = fs.readFileSync(path.join(__dirname, "db.sql"), "utf8");
+  const currentDir = dirname(fileURLToPath(import.meta.url));
+  const sqlScriptPath = path.join(currentDir, 'db.sql');
+  const sqlScript = fs.readFileSync(sqlScriptPath, "utf8");
+
   connection.query(sqlScript, (error) => {
     if (error) throw error;
     console.log("Database setup completed.");
