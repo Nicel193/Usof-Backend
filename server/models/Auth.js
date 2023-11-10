@@ -1,14 +1,16 @@
 import DatabaseConnection from "../db/dbconnection.js"
 import TokenService from "../services/tokenService.js";
+import DbOperations from "../db/dboperations.js";
 import bcrypt from "bcrypt"
 
-const saltRounds = 5;
+const SaltRounds = 5;
+const UsersTableName = 'users'
 
 class Auth {
     async register(user, res) {
         let sqlUser = {
             login: user.login,
-            pass: bcrypt.hashSync(user.pass, bcrypt.genSaltSync(saltRounds)),
+            pass: bcrypt.hashSync(user.pass, bcrypt.genSaltSync(SaltRounds)),
             fullName: user.fullName,
             profilePicture: 'user.png',
             rating: 0,
@@ -16,15 +18,8 @@ class Auth {
             isActivated: true
         };
 
-        const sql = 'INSERT INTO users SET ?';
-
-        DatabaseConnection.query(sql, sqlUser, async function (err, result, rows) {
-            if (err) {
-               res.status(400).json(err);
-               return;  
-            }
-
-            let tokens = TokenService.generateTokens(result.insertId, user.email, user.login);
+        DbOperations.defaultInsert(res, UsersTableName, sqlUser, (res) => {
+            let tokens = TokenService.generateTokens(res.insertId, user.email, user.login);
             TokenService.saveTocken(user.login, tokens.refreshToken);
             res.cookie('refreshToken', tokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
             
@@ -32,10 +27,10 @@ class Auth {
                     refreshToken: tokens.refreshToken,
                     login: user.login,
                     email: user.email,
-                    id: result.insertId,
+                    id: res.insertId,
                     roles: 'user'
                 });
-        });
+          });
     }
 
     login(user, res) {
@@ -81,7 +76,7 @@ class Auth {
 
     resetPass(email, res) {
         const newPassword = shortid.generate();
-        let new_has = bcrypt.hashSync(newPassword, bcrypt.genSaltSync(saltRounds));
+        let new_has = bcrypt.hashSync(newPassword, bcrypt.genSaltSync(SaltRounds));
         const sql = `UPDATE users SET pass="${new_has}" WHERE email="${email}"`
 
         DatabaseConnection.query(sql, async function(err, rows) {
