@@ -34,18 +34,6 @@ class User {
         });
     }
 
-    // getPostByUser(id, res) {
-    //     const sql = 'SELECT * FROM posts WHERE idOwner=?'
-    //     DatabaseConnection.query(sql, id, function (err, rows) {
-    //         if (err) {
-    //            res.status(400).json(err);
-    //            return;
-    //         }
-            
-    //         res.json(rows);
-    //     });
-    // }
-
     getUserById(id, res) {
         const sql = 'SELECT * FROM users WHERE id=?';
 

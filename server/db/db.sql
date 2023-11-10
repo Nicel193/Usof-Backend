@@ -19,3 +19,23 @@ CREATE TABLE IF NOT EXISTS tokens (
     refreshTocken VARCHAR(255) NOT NULL,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE IF NOT EXISTS posts (
+    id INT(11) AUTO_INCREMENT,
+    authorId INT(11) NOT NULL,
+    authorLogin VARCHAR(31) NOT NULL,
+    title VARCHAR(31) NOT NULL,
+    publishDate DATETIME NOT NULL,
+    isActive BOOLEAN NOT NULL,
+    content TEXT NOT NULL,
+    categories VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (authorId) REFERENCES users(id)
+);
+
+-- CREATE TABLE IF NOT EXISTS categories (
+--     id INT(11) AUTO_INCREMENT,
+--     title VARCHAR(31) NOT NULL,
+--     description VARCHAR(255) NOT NULL,
+--     PRIMARY KEY (id)
+-- );

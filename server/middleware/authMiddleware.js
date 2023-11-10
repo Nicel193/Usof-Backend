@@ -1,6 +1,6 @@
 import TokenService from "../services/tokenService.js"
 
-module.exports = function (req, res, next) {
+export default function (req, res, next) {
     try {
         const authorizationHeader = req.headers.authorization;
         if (!authorizationHeader) {

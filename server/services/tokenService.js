@@ -12,7 +12,7 @@ class TokenService {
             "login": login
         }
 
-        const accessToken = jwt.sign(payload, JWT_ACCESS_SECRET, {expiresIn: '3h'})
+        const accessToken = jwt.sign(payload, JWT_ACCESS_SECRET, {expiresIn: '3d'})
         const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET, {expiresIn: '30d'})
         return {
             accessToken,

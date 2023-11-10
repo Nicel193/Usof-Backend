@@ -10,7 +10,7 @@ class AuthController {
     } else {
       Auth.register(req.body, res);
     }
-  }
+}
 
   login(req, res) {
     Auth.login(req.body, res);
