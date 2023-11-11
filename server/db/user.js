@@ -1,9 +1,8 @@
-import { Sequelize, DataTypes } from "sequelize";
+import db from "./db.js"
+import { DataTypes } from "sequelize";
 
-const sequelize = new Sequelize("mysql://root:password@localhost:3306/usof");
-
-const Test = sequelize.define(
-  "Test",
+const DbUser = db.define(
+  "User",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -48,17 +47,17 @@ const Test = sequelize.define(
     },
   },
   {
-    tableName: "tests", // имя таблицы
-    timestamps: false, // отключение автогенерации полей createdAt и updatedAt
+    tableName: "users",
+    timestamps: false,
   }
 );
 
-Test.sync()
+DbUser.sync()
   .then(() => {
-    console.log("Таблица успешно создана");
+    console.log("The table was created successfully");
   })
   .catch((error) => {
-    console.error("Ошибка при создании таблицы:", error);
+    console.error("Error when creating the users table:", error);
   });
 
-export default Test;
+export default DbUser;

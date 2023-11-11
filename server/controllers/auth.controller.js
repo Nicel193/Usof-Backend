@@ -1,8 +1,8 @@
-import Auth from "../models/Auth.js";
+import Auth from "../models/TestAuth.js";
 import { validationResult } from "express-validator";
 
 class AuthController {
-  reqistration(req, res) {
+  async reqistration(req, res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(400).json(errors.array());
@@ -29,6 +29,7 @@ class AuthController {
       Auth.refresh(refreshToken, res);
     } else res.status(400).json("Not found refreshToken");
   }
+
   // reset(req, res) {
   //     Auth.resetPass(req.body.email, res);
   // }

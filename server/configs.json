@@ -1,0 +1,13 @@
+{
+  "adminPanel": {
+    "password": "password",
+    "email": "test@gmail.com"
+  },
+  "database": {
+    "host": "localhost",
+    "user": "root",
+    "password": "password",
+    "database": "usof",
+    "port": "3306"
+  }
+}

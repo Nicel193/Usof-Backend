@@ -1,20 +1,22 @@
+import Config from "../configs.json" assert { type: "json" };
+import DbUser from "../db/user.js";
+
 import AdminJS from "adminjs";
 import AdminJSExpress from "@adminjs/express";
 import AdminJSSequelize from "@adminjs/sequelize";
-import Test from "../models/Test.js";
+
 
 AdminJS.registerAdapter(AdminJSSequelize);
 
 const adminJsOptions = {
   resources: [
     {
-      resource: Test,
+      resource: DbUser,
       options: {
         properties: {
           pass: {
             isVisible: { list: false, show: false, edit: true, filter: false },
-          },
-          // Другие настройки свойств
+          }
         },
       },
     },
@@ -24,12 +26,12 @@ const adminJsOptions = {
 const admin = new AdminJS(adminJsOptions);
 
 const authenticate = async () => {
-  return { email: "t@t.t" };
+  return { email: Config.adminPanel.email };
 };
 
 const adminRouter = AdminJSExpress.buildAuthenticatedRouter(admin, {
   authenticate,
-  cookiePassword: "very_secret_secret",
+  cookiePassword: Config.adminPanel.password,
 });
 
 export default { 
