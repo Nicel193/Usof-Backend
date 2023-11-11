@@ -1,63 +1,38 @@
-import AdminJS from 'adminjs'
-import AdminJSExpress from '@adminjs/express'
-import express from 'express'
-import Connect from 'connect-pg-simple'
-import session from 'express-session'
+import AdminJS from "adminjs";
+import AdminJSExpress from "@adminjs/express";
+import AdminJSSequelize from "@adminjs/sequelize";
+import Test from "../models/Test.js";
 
-const PORT = 3000
+AdminJS.registerAdapter(AdminJSSequelize);
 
-const DEFAULT_ADMIN = {
-  email: 'admin@example.com',
-  password: 'password',
-}
-
-const authenticate = async (email, password) => {
-  if (email === DEFAULT_ADMIN.email && password === DEFAULT_ADMIN.password) {
-    return Promise.resolve(DEFAULT_ADMIN)
-  }
-  return null
-}
-
-const start = async () => {
-  const app = express()
-
-  const admin = new AdminJS({})
-
-  const ConnectSession = Connect(session)
-  const sessionStore = new ConnectSession({
-    conObject: {
-      connectionString: 'postgres://adminjs:@localhost:5432/adminjs',
-      ssl: process.env.NODE_ENV === 'production',
-    },
-    tableName: 'session',
-    createTableIfMissing: true,
-  })
-
-  const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
-    admin,
+const adminJsOptions = {
+  resources: [
     {
-      authenticate,
-      cookieName: 'adminjs',
-      cookiePassword: 'sessionsecret',
-    },
-    null,
-    {
-      store: sessionStore,
-      resave: true,
-      saveUninitialized: true,
-      secret: 'sessionsecret',
-      cookie: {
-        httpOnly: process.env.NODE_ENV === 'production',
-        secure: process.env.NODE_ENV === 'production',
+      resource: Test,
+      options: {
+        properties: {
+          pass: {
+            isVisible: { list: false, show: false, edit: true, filter: false },
+          },
+          // Другие настройки свойств
+        },
       },
-      name: 'adminjs',
-    }
-  )
-  app.use(admin.options.rootPath, adminRouter)
+    },
+  ],
+};
 
-  app.listen(PORT, () => {
-    console.log(`AdminJS started on http://localhost:${PORT}${admin.options.rootPath}`)
-  })
-}
+const admin = new AdminJS(adminJsOptions);
 
-start()
+const authenticate = async () => {
+  return { email: "t@t.t" };
+};
+
+const adminRouter = AdminJSExpress.buildAuthenticatedRouter(admin, {
+  authenticate,
+  cookiePassword: "very_secret_secret",
+});
+
+export default { 
+  path: admin.options.rootPath, 
+  router: adminRouter 
+};
