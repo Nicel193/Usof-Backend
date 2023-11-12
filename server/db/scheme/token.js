@@ -1,4 +1,4 @@
-import db from "./db.js";
+import db from "../db.js";
 import { DataTypes } from "sequelize";
 import DbUser from "./user.js";
 
@@ -30,7 +30,7 @@ const DbToken = db.define(
 
 DbToken.sync()
   .then(() => {
-    console.log("The tokens was created successfully");
+    console.log("The tokens was sync");
   })
   .catch((error) => {
     console.error("Error when creating the tokens table:", error);

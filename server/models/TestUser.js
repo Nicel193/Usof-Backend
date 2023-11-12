@@ -1,4 +1,4 @@
-import DbUser from "../db/user.js";
+import DbUser from "../db/scheme/user.js";
 import userDto from "../userDto.js";
 
 class User {

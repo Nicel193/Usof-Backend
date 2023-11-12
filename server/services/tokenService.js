@@ -1,4 +1,4 @@
-import DbToken from "../db/token.js";
+import DbToken from "../db/scheme/token.js";
 import jwt from "jsonwebtoken";
 
 const JWT_ACCESS_SECRET = "14b0e619-4697-4fad-b5be-7550d9f331e4";

@@ -1,17 +1,27 @@
 import Config from "../configs.json" assert { type: "json" };
-import DbUser from "../db/user.js";
+import DbUser from "../db/scheme/user.js";
+import DbCategory from "../db/scheme/categories.js";
 
 import AdminJS from "adminjs";
 import AdminJSExpress from "@adminjs/express";
 import AdminJSSequelize from "@adminjs/sequelize";
-
 
 AdminJS.registerAdapter(AdminJSSequelize);
 
 const adminJsOptions = {
   resources: [
     {
-      resource: DbUser,
+      resource: DbUser, 
+      options: {
+        properties: {
+          pass: {
+            isVisible: { list: false, show: false, edit: true, filter: false },
+          }
+        },
+      },
+    },
+    {
+      resource: DbCategory, 
       options: {
         properties: {
           pass: {

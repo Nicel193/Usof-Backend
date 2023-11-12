@@ -1,5 +1,5 @@
-import DbUser from "../db/user.js";
-import DbToken from "../db/token.js";
+import DbUser from "../db/scheme/user.js";
+import DbToken from "../db/scheme/token.js";
 import TokenService from "../services/tokenService.js";
 import bcrypt from "bcrypt";
 

@@ -1,4 +1,4 @@
-import db from "./db.js"
+import db from "../db.js"
 import { DataTypes } from "sequelize";
 
 const DbUser = db.define(
@@ -54,7 +54,7 @@ const DbUser = db.define(
 
 DbUser.sync()
   .then(() => {
-    console.log("The table was created successfully");
+    console.log("The users was sync");
   })
   .catch((error) => {
     console.error("Error when creating the users table:", error);
