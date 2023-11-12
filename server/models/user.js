@@ -1,8 +1,5 @@
-import DatabaseConnection from "../db/dbconnection.js";
-import DbOperations from "../db/dboperations.js";
+import DbUser from "../db/scheme/user.js";
 import userDto from "../userDto.js";
-
-const TableName = "users";
 
 class User {
   createNewUser(user, res) {
@@ -15,78 +12,85 @@ class User {
       email: user.email,
     };
 
-    DbOperations.defaultInsert(res, TableName, sqlUser, () => {
+    try {
+      const createdUser = DbUser.create(sqlUser);
       res.json("Success");
-    });
+    } catch (err) {
+      res.status(400).json(err.message);
+    }
   }
 
-  getAllUsers(res) {
-    const sql = "SELECT * FROM users";
-
-    DbOperations.defaultSelect(res, TableName, (rows) => {
-      res.json(userDto.getDto(rows));
-    });
+  async getAllUsers(res) {
+    try {
+      const users = await DbUser.findAll();
+      res.json(userDto.getDto(users));
+    } catch (err) {
+      res.status(400).json(err.message);
+    }
   }
 
-  getUserById(id, res) {
-    const sql = "SELECT * FROM users WHERE id=?";
+  async getUserById(id, res) {
+    try {
+      const user = await DbUser.findByPk(id);
 
-    DatabaseConnection.query(sql, id, function (err, rows) {
-      if (err) {
-        res.status(400).json(err);
-        return;
-      }
-      if (rows.length == 0) {
+      if (!user) {
         res.status(400).json("User not found");
         return;
       }
-      res.json(userDto.getDto(rows)[0]);
-    });
-  }
 
-  addAvatar(login, path, res) {
-    const sql = `UPDATE users SET profilePicture="${path}" WHERE login="${login}"`;
-    DatabaseConnection.query(sql, function (err, result, rows) {
-      if (err) {
-        res.status(400).json(err);
-        return;
-      }
-      res.json(path);
-    });
-  }
-
-  updateUser(user, authId, id, res) {
-    const sql = `UPDATE users SET ? WHERE id="${id}"`;
-
-    if (authId != id) {
-      res.status(400).json("not avalible");
-      return;
+      res.json(userDto.getDto([user])[0]);
+    } catch (err) {
+      res.status(400).json(err.message);
     }
-
-    DatabaseConnection.query(sql, user, function (err, result, rows) {
-      if (err) {
-        res.status(400).json(err);
-        return;
-      }
-      res.json("Success");
-    });
   }
 
-  deleteUser(id, res) {
-    const sql = `DELETE FROM users WHERE id="${id}"`;
-
-    DatabaseConnection.query(sql, function (err, rows) {
-      if (err) {
-        res.status(200).json(err);
+  async addAvatar(login, path, res) {
+    try {
+      const [updatedRowsCount] = await DbUser.update({ profilePicture: path }, { where: { login } });
+      
+      if (updatedRowsCount === 0) {
+        res.status(400).json("User not found");
         return;
       }
-      console.log(rows);
-      if (rows.affectedRows == 0) {
-        res.status(200).json("User already delete");
+
+      res.json(path);
+    } catch (err) {
+      res.status(400).json(err.message);
+    }
+  }
+
+  async updateUser(user, authId, id, res) {
+    try {
+
+      if (authId != id) {
+        res.status(400).json("not available");
+        return;
+      }
+
+      const [updatedRowsCount] = await DbUser.update(user, { where: { id } });
+      if (updatedRowsCount === 0) {
+        res.status(400).json("User not found");
         return;
       }
       res.json("Success");
-    });
+    } catch (err) {
+      res.status(400).json(err.message);
+    }
+  }
+
+  async deleteUser(id, res) {
+    try {
+      const deletedRowsCount = await DbUser.destroy({ where: { id } });
+
+      if (deletedRowsCount === 0) {
+        res.status(400).json("User not found");
+        return;
+      }
+
+      res.json("Success");
+    } catch (err) {
+      res.status(400).json(err.message);
+    }
   }
 }
 

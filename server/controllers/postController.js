@@ -1,4 +1,4 @@
-import Post from "../models/TestPost.js";
+import Post from "../models/Post.js";
 
 class PostController {
   async getPosts(req, res) {

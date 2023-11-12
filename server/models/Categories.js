@@ -1,6 +1,5 @@
 import DbPost from "../db/scheme/post.js";
 import DbCategory from "../db/scheme/categories.js";
-import DbPostCategory from "../db/scheme/posts-categories.js";
 
 class Categories {
   async createCategory(content, res) {

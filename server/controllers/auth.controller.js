@@ -1,4 +1,4 @@
-import Auth from "../models/TestAuth.js";
+import Auth from "../models/Auth.js";
 import { validationResult } from "express-validator";
 
 class AuthController {
