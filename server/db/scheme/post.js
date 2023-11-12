@@ -34,6 +34,10 @@ const DbPost = db.define(
     content: {
       type: DataTypes.TEXT,
       allowNull: false,
+    },
+    categories: {
+      type: DataTypes.STRING,
+      allowNull: false,
     }
   },
   {

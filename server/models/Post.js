@@ -8,46 +8,46 @@ class Post {
     const sql = `SELECT * FROM posts WHERE isActive=true LIMIT ${postsPerPage} OFFSET ${offset}`;
 
     DatabaseConnection.query(sql, function (err, rows) {
-        if (err) {
-           res.status(400).json(err);
-           return;
-        }
-        
-        res.json(rows);
+      if (err) {
+        res.status(400).json(err);
+        return;
+      }
+
+      res.json(rows);
     });
   }
 
-  getPostById(req, res, postId){
-    const sql = 'SELECT * FROM posts WHERE id=?';
+  getPostById(req, res, postId) {
+    const sql = "SELECT * FROM posts WHERE id=?";
 
-    DatabaseConnection.query(sql, postId, function(err, rows) {
-        if(err) {
-            res.status(400).json(err);
-            return;
-        }
-        if (rows.length == 0) {
-            res.status(400).json('Post not found');
-            return;
-        }
-        res.json(rows[0]);
-    })
-  }
-
-  getPostCategories(req, res, postId){
-    const sql = 'SELECT * FROM posts WHERE id=?';
-
-    DatabaseConnection.query(sql, postId, function(err, rows) {
-      if(err) {
-          res.status(400).json(err);
-          return;
+    DatabaseConnection.query(sql, postId, function (err, rows) {
+      if (err) {
+        res.status(400).json(err);
+        return;
       }
       if (rows.length == 0) {
-          res.status(400).json('Post not found');
-          return;
+        res.status(400).json("Post not found");
+        return;
+      }
+      res.json(rows[0]);
+    });
+  }
+
+  getPostCategories(req, res, postId) {
+    const sql = "SELECT * FROM posts WHERE id=?";
+
+    DatabaseConnection.query(sql, postId, function (err, rows) {
+      if (err) {
+        res.status(400).json(err);
+        return;
+      }
+      if (rows.length == 0) {
+        res.status(400).json("Post not found");
+        return;
       }
 
       res.json(rows[0].categories);
-  })
+    });
   }
 
   createNewPost(req, res, authorLogin, authorId) {
