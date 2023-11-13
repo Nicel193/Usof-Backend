@@ -1,6 +1,7 @@
 import DbCategory from "../db/scheme/categories.js";
 import DbPost from "../db/scheme/post.js";
 import DbPostCategory from "../db/scheme/posts-categories.js";
+import DbLikes from "../db/scheme/likes.js";
 
 const postsPerPage = 10;
 
@@ -12,7 +13,7 @@ class Post {
       const posts = await DbPost.findAll({
         where: { isActive: true },
         limit: postsPerPage,
-        offset: offset
+        offset: offset,
       });
 
       res.json(posts);
@@ -24,35 +25,69 @@ class Post {
   async getPostById(req, res, postId) {
     try {
       const post = await DbPost.findByPk(postId);
-  
+
       if (!post) {
-        res.status(400).json('Post not found');
+        res.status(400).json("Post not found");
         return;
       }
-  
+
       res.json(post);
     } catch (error) {
       res.status(400).json(error);
     }
   }
-  
+
+  async getLikes(res, postId) {
+    try {
+      const likes = await DbLikes.findAll({
+        where: { idPost: postId },
+      });
+
+      res.status(200).json(likes);
+    } catch (error) {
+      res.status(400).json(error);
+    }
+  }
 
   async getPostCategories(req, res, postId) {
     try {
       const post = await DbPost.findByPk(postId);
-  
+
       if (!post) {
-        res.status(400).json('Post not found');
+        res.status(400).json("Post not found");
         return;
       }
-  
+
       const categories = post.categories;
       res.json(categories);
     } catch (error) {
       res.status(400).json(error);
     }
   }
-  
+
+  async createNewLike(login, res, postId) {
+    try {
+      const post = await DbLikes.create({
+        login: login,
+        idPost: postId,
+        likeType: "post",
+      });
+
+      res.json("Success");
+    } catch (error) {
+      if ((error.name = "SequelizeUniqueConstraintError")) {
+        res
+          .status(400)
+          .json(
+            "Error: Duplicate entry. This login has already liked this post."
+          );
+
+        return;
+      }
+
+      res.status(500).json("Internal Server Error");
+    }
+  }
 
   async createNewPost(req, res, authorLogin, authorId) {
     try {
@@ -147,6 +182,16 @@ class Post {
       } else {
         res.status(404).json("Post not found");
       }
+    } catch (error) {
+      res.status(400).json(error);
+    }
+  }
+
+  async deleteLike(login, res) {
+    try {
+      DbLikes.destroy({ where: { login: login } });
+
+      res.status(200).json("Success");
     } catch (error) {
       res.status(400).json(error);
     }
