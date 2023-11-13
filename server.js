@@ -6,6 +6,7 @@ import authRouter from "./server/routes/authorizationRouter.js";
 import userRouter from "./server/routes/userRouter.js";
 import categoriesRouter from "./server/routes/categoriesRouter.js"
 import postRouter from "./server/routes/postRouter.js";
+import commentRouter from "./server/routes/commentRouter.js";
 
 const PORT = 3000;
 
@@ -19,6 +20,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/posts", postRouter);
+app.use("/api/comments", commentRouter);
 
 app.listen(PORT, () => {
   console.log(

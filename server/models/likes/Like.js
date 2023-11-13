@@ -31,9 +31,18 @@ class Like {
 
   async destroy(res, user) {
     try {
-      DbLikes.destroy({ where: { login: user.login } });
+      const existingLike = await DbLikes.findOne({
+        where: { login: user.login },
+      });
 
-      res.status(200).json("Success");
+      if (!existingLike) {
+        res.status(404).json("Not found");
+        return;
+      }
+
+      await existingLike.destroy();
+
+      res.json("Success");
     } catch (error) {
       res.status(400).json(error);
     }
