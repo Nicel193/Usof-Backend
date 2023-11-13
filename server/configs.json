@@ -9,5 +9,9 @@
     "password": "password",
     "database": "usof",
     "port": "3306"
+  },
+  "nodemailer": {
+    "user": "your",
+    "pass": "your"
   }
 }

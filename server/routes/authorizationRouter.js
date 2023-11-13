@@ -3,11 +3,11 @@ import authController from "../controllers/auth.controller.js";
 
 const router = express.Router();
 
-//TODO: Add reset pass by email
 router.post('/register', authController.reqistration);
 router.post('/login', authController.login);
 router.post('/logout', authController.logout);
 router.get('/refresh', authController.refresh);
-// router.post('/reset', authController.reset);
+router.post('/password-reset', authController.sendResetPassword);
+router.post('/password-reset/:confirmtoken', authController.resetPassword);
 
 export default router;

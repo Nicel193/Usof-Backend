@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 
 const JWT_ACCESS_SECRET = "14b0e619-4697-4fad-b5be-7550d9f331e4";
 const JWT_REFRESH_SECRET = "1fec183a-3df8-40df-a33b-965d46ab50c5";
+const JWT_RESET_PASSWORD_SECRET = "56ec18sa-3sad8-das-ds3ad-965d4ssadasd";
 
 class TokenService {
   generateTokens(userId, email, login) {
@@ -24,6 +25,18 @@ class TokenService {
     };
   }
 
+  generateResetToken(email) {
+    const payload = {
+      email: email,
+    };
+
+    const resetToken = jwt.sign(payload, JWT_RESET_PASSWORD_SECRET, {
+      expiresIn: "1d",
+    });
+
+    return resetToken;
+  }
+
   validateAccessToken(token) {
     try {
       const userData = jwt.verify(token, JWT_ACCESS_SECRET);
@@ -37,6 +50,15 @@ class TokenService {
     try {
       const userData = jwt.verify(token, JWT_REFRESH_SECRET);
       return userData;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  validateResetPasswordToken(token) {
+    try {
+      const emailData = jwt.verify(token, JWT_RESET_PASSWORD_SECRET);
+      return emailData;
     } catch (e) {
       return null;
     }

@@ -10,29 +10,39 @@ class AuthController {
     } else {
       Auth.register(req.body, res);
     }
-}
+  }
 
-  login(req, res) {
+  async login(req, res) {
     Auth.login(req.body, res);
   }
 
-  logout(req, res) {
+  async logout(req, res) {
     const { refreshToken } = req.cookies;
     Auth.logout(refreshToken);
     res.clearCookie("refreshToken");
     res.status(200).json("logout");
   }
 
-  refresh(req, res) {
-    if (req.cookies.hasOwnProperty('refreshToken')) {
+  async refresh(req, res) {
+    if (req.cookies.hasOwnProperty("refreshToken")) {
       const { refreshToken } = req.cookies;
       Auth.refresh(refreshToken, res);
     } else res.status(400).json("Not found refreshToken");
   }
 
-  // reset(req, res) {
-  //     Auth.resetPass(req.body.email, res);
-  // }
+  async sendResetPassword(req, res) {
+    await Auth.sendResetPassword(req.body.email, res);
+  }
+
+  async resetPassword(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json(errors.array());
+      return;
+    } else {
+      await Auth.resetPassword(req.params.confirmtoken, req.body.password, res);
+    }
+  }
 }
 
 export default new AuthController();

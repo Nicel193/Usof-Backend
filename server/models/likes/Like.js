@@ -32,7 +32,7 @@ class Like {
   async destroy(res, user) {
     try {
       const existingLike = await DbLikes.findOne({
-        where: { login: user.login },
+        where: { login: user.login }
       });
 
       if (!existingLike) {
