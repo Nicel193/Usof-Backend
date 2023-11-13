@@ -14,8 +14,16 @@ class PostController {
     Post.getLikes(res, req.params.postId);
   }
 
+  async getComments(req, res) {
+    Post.getComments(res, req.params.postId);
+  }
+
   async getPostCategories(req, res) {
     Post.getPostCategories(req, res, req.params.postId);
+  }
+
+  async createComment(req, res) {
+    Post.createNewComment(req.user, req.body.content, res, req.params.postId);
   }
 
   async createLike(req, res) {
@@ -34,7 +42,7 @@ class PostController {
     Post.deletePost(req, res, req.params.postId);
   }
 
-  async deleteLike(req, res){
+  async deleteLike(req, res) {
     Post.deleteLike(req.user.login, res);
   }
 }

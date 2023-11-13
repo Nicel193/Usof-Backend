@@ -2,7 +2,9 @@ import db from "../db.js";
 import { DataTypes } from "sequelize";
 
 import DbPost from "./post.js";
+import DbComments from "./comments.js";
 
+//TODO:Add date
 const DbLikes = db.define(
   "Like",
   {
@@ -14,7 +16,7 @@ const DbLikes = db.define(
     login: {
       type: DataTypes.STRING(31),
       allowNull: false,
-      unique: true
+      unique: true,
     },
     idPost: {
       type: DataTypes.INTEGER,
@@ -31,12 +33,12 @@ const DbLikes = db.define(
   },
   {
     tableName: "likes",
-    timestamps: false,
+    timestamps: false
   }
 );
 
 DbLikes.belongsTo(DbPost, { foreignKey: "idPost" });
-// DbLikes.belongsTo(Comments, { foreignKey: "idComment" });
+DbLikes.belongsTo(DbComments, { foreignKey: "idComment" });
 
 DbLikes.sync()
   .then(() => {

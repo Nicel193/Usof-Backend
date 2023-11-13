@@ -2,6 +2,8 @@ import DbCategory from "../db/scheme/categories.js";
 import DbPost from "../db/scheme/post.js";
 import DbPostCategory from "../db/scheme/posts-categories.js";
 import DbLikes from "../db/scheme/likes.js";
+import DbComments from "../db/scheme/comments.js";
+import { where } from "sequelize";
 
 const postsPerPage = 10;
 
@@ -62,6 +64,35 @@ class Post {
       res.json(categories);
     } catch (error) {
       res.status(400).json(error);
+    }
+  }
+
+  async getComments(res, postId) {
+    try {
+      const likes = await DbComments.findAll({
+        where: { postId: postId }
+      });
+
+      res.status(200).json(likes);
+    } catch (error) {
+      res.status(400).json(error);
+    }
+  }
+
+  async createNewComment(user, content, res, postId) {
+    try {
+      await DbComments.create({
+        loginOwner: user.login,
+        idOwner: user.userId,
+        postId: postId,
+        content: content,
+        date: new Date()
+      });
+
+      res.json("Success");
+    } catch (error) {
+      console.log(error);
+      res.status(500).json("Internal Server Error");
     }
   }
 
