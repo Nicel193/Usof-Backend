@@ -27,7 +27,7 @@ class PostController {
   }
 
   async createLike(req, res) {
-    Post.createNewLike(req.user.login, res, req.params.postId);
+    Post.createNewLike(req.user, res, req.params.postId);
   }
 
   async createPost(req, res) {
@@ -43,7 +43,7 @@ class PostController {
   }
 
   async deleteLike(req, res) {
-    Post.deleteLike(req.user.login, res);
+    Post.deleteLike(req.user, res);
   }
 }
 

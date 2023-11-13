@@ -1,20 +1,20 @@
 import DbCategory from "../db/scheme/categories.js";
 import DbPost from "../db/scheme/post.js";
 import DbPostCategory from "../db/scheme/posts-categories.js";
-import DbLikes from "../db/scheme/likes.js";
 import DbComments from "../db/scheme/comments.js";
-import { where } from "sequelize";
 
-const postsPerPage = 10;
+import PostLike from "./likes/PostLike.js";
+
+const PostsPerPage = 10;
 
 class Post {
   async getPosts(req, res, page) {
     try {
-      const offset = (page - 1) * postsPerPage;
+      const offset = (page - 1) * PostsPerPage;
 
       const posts = await DbPost.findAll({
         where: { isActive: true },
-        limit: postsPerPage,
+        limit: PostsPerPage,
         offset: offset,
       });
 
@@ -40,15 +40,7 @@ class Post {
   }
 
   async getLikes(res, postId) {
-    try {
-      const likes = await DbLikes.findAll({
-        where: { idPost: postId },
-      });
-
-      res.status(200).json(likes);
-    } catch (error) {
-      res.status(400).json(error);
-    }
+    await PostLike.getLikes(res, postId);
   }
 
   async getPostCategories(req, res, postId) {
@@ -70,7 +62,7 @@ class Post {
   async getComments(res, postId) {
     try {
       const likes = await DbComments.findAll({
-        where: { postId: postId }
+        where: { postId: postId },
       });
 
       res.status(200).json(likes);
@@ -86,7 +78,7 @@ class Post {
         idOwner: user.userId,
         postId: postId,
         content: content,
-        date: new Date()
+        date: new Date(),
       });
 
       res.json("Success");
@@ -96,28 +88,8 @@ class Post {
     }
   }
 
-  async createNewLike(login, res, postId) {
-    try {
-      const post = await DbLikes.create({
-        login: login,
-        idPost: postId,
-        likeType: "post",
-      });
-
-      res.json("Success");
-    } catch (error) {
-      if ((error.name = "SequelizeUniqueConstraintError")) {
-        res
-          .status(400)
-          .json(
-            "Error: Duplicate entry. This login has already liked this post."
-          );
-
-        return;
-      }
-
-      res.status(500).json("Internal Server Error");
-    }
+  async createNewLike(user, res, postId) {
+    await PostLike.createLike(res, user, postId);
   }
 
   async createNewPost(req, res, authorLogin, authorId) {
@@ -218,14 +190,8 @@ class Post {
     }
   }
 
-  async deleteLike(login, res) {
-    try {
-      DbLikes.destroy({ where: { login: login } });
-
-      res.status(200).json("Success");
-    } catch (error) {
-      res.status(400).json(error);
-    }
+  async deleteLike(user, res) {
+    await PostLike.destroy(res, user);
   }
 }
 
