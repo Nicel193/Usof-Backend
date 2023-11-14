@@ -1,6 +1,8 @@
 import express from "express";
 import PostController from "../controllers/postController.js";
-import AuthMiddleware from "../middleware/authMiddleware.js";
+
+import authMiddleware from "../middleware/authMiddleware.js";
+import roleMiddleware from "../middleware/roleMiddleware.js";
 
 const router = express.Router();
 
@@ -10,11 +12,11 @@ router.get('/:postId', PostController.getPost);
 router.get('/:postId/categories', PostController.getPostCategories);
 router.get('/:postId/like', PostController.getLikes);
 router.get('/:postId/comments', PostController.getComments);
-router.post('/', AuthMiddleware, PostController.createPost);
-router.post('/:postId/comments', AuthMiddleware, PostController.createComment);
-router.post('/:postId/like', AuthMiddleware, PostController.createLike);
-router.patch('/:postId', AuthMiddleware, PostController.updatePost);
-router.delete('/:postId', AuthMiddleware, PostController.deletePost);
-router.delete('/:postId/like', AuthMiddleware, PostController.deleteLike);
+router.post('/', authMiddleware, PostController.createPost);
+router.post('/:postId/comments', authMiddleware, PostController.createComment);
+router.post('/:postId/like', authMiddleware, PostController.createLike);
+router.patch('/:postId', authMiddleware, PostController.updatePost);
+router.delete('/:postId', authMiddleware, PostController.deletePost);
+router.delete('/:postId/like', authMiddleware, PostController.deleteLike);
 
 export default router;

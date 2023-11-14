@@ -38,6 +38,10 @@ class PostController {
     Post.updatePost(req.body, res, req.params.postId);
   }
 
+  async updatePostAdmin(req, res) {
+    throw Error("Not implemented");
+  }
+
   async deletePost(req, res) {
     Post.deletePost(req, res, req.params.postId);
   }

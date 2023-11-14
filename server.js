@@ -20,8 +20,8 @@ app.use(cookies());
 app.use(admin.path, admin.router);
 
 app.use("/api/auth", authRouter);
-app.use("/api/users", authMiddleware, roleMiddleware('admin'), userRouter);
-app.use("/api/categories", categoriesRouter);
+app.use("/api/users", authMiddleware, roleMiddleware(['admin']), userRouter);
+app.use("/api/categories", authMiddleware, roleMiddleware(['admin']), categoriesRouter);
 app.use("/api/posts", postRouter);
 app.use("/api/comments", commentRouter);
 
