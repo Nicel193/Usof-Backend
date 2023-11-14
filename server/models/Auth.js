@@ -19,11 +19,7 @@ class Auth {
         isActivated: true,
       });
 
-      const tokens = TokenService.generateTokens(
-        createdUser.id,
-        user.email,
-        user.login
-      );
+      const tokens = TokenService.generateTokens(createdUser);
 
       TokenService.saveToken(user.login, tokens.refreshToken);
 
@@ -60,11 +56,8 @@ class Auth {
       const isPasswordValid = bcrypt.compareSync(password, userByLogin.pass);
 
       if (isPasswordValid) {
-        const tokens = TokenService.generateTokens(
-          userByLogin.id,
-          userByLogin.email,
-          userByLogin.login
-        );
+        const tokens = TokenService.generateTokens(userByLogin);
+
         TokenService.saveToken(userByLogin.login, tokens.refreshToken);
 
         res.cookie("refreshToken", tokens.refreshToken, {
@@ -156,11 +149,7 @@ class Auth {
 
     try {
       DbToken.findOne({ where: { refreshToken: refreshToken } }).then(() => {
-        let tokens = TokenService.generateTokens(
-          userData.userId,
-          userData.email,
-          userData.login
-        );
+        let tokens = TokenService.generateTokens(userData);
 
         TokenService.saveToken(userData.login, tokens.refreshToken);
 
@@ -168,6 +157,7 @@ class Auth {
           maxAge: 30 * 24 * 60 * 60 * 1000,
           httpOnly: true,
         });
+        
         res.json({
           accessToken: tokens.accessToken,
           refreshToken: tokens.refreshToken,

@@ -2,6 +2,9 @@ import express from "express";
 import cookies from "cookie-parser";
 import admin from "./server/admin/admin.js";
 
+import authMiddleware from "./server/middleware/authMiddleware.js";
+import roleMiddleware from "./server/middleware/roleMiddleware.js";
+
 import authRouter from "./server/routes/authorizationRouter.js";
 import userRouter from "./server/routes/userRouter.js";
 import categoriesRouter from "./server/routes/categoriesRouter.js"
@@ -17,7 +20,7 @@ app.use(cookies());
 app.use(admin.path, admin.router);
 
 app.use("/api/auth", authRouter);
-app.use("/api/users", userRouter);
+app.use("/api/users", authMiddleware, roleMiddleware('admin'), userRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/posts", postRouter);
 app.use("/api/comments", commentRouter);

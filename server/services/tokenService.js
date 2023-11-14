@@ -6,11 +6,12 @@ const JWT_REFRESH_SECRET = "1fec183a-3df8-40df-a33b-965d46ab50c5";
 const JWT_RESET_PASSWORD_SECRET = "56ec18sa-3sad8-das-ds3ad-965d4ssadasd";
 
 class TokenService {
-  generateTokens(userId, email, login) {
+  generateTokens(user) {
     const payload = {
-      userId: userId,
-      email: email,
-      login: login,
+      id: user.id,
+      email: user.email,
+      login: user.login,
+      role: user.roles
     };
 
     const accessToken = jwt.sign(payload, JWT_ACCESS_SECRET, {
