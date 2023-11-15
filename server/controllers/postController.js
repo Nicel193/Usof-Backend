@@ -1,53 +1,58 @@
-import Post from "../models/Post.js";
+import UserPost from "../models/posts/UserPost.js";
+import PostLike from "../models/likes/PostLike.js";
 
 class PostController {
   async getPosts(req, res) {
     const page = req.query.page ? Number(req.query.page) : 1;
-    Post.getPosts(req, res, page);
+    UserPost.getPosts(req, res, page);
   }
 
   async getPost(req, res) {
-    Post.getPostById(req, res, req.params.postId);
+    UserPost.getPostById(req, res, req.params.postId);
   }
 
   async getLikes(req, res) {
-    Post.getLikes(res, req.params.postId);
+    PostLike.getLikes(res, req.params.postId);
   }
 
   async getComments(req, res) {
-    Post.getComments(res, req.params.postId);
+    UserPost.getComments(res, req.params.postId);
   }
 
   async getPostCategories(req, res) {
-    Post.getPostCategories(req, res, req.params.postId);
+    UserPost.getPostCategories(req, res, req.params.postId);
   }
 
   async createComment(req, res) {
-    Post.createNewComment(req.user, req.body.content, res, req.params.postId);
+    UserPost.createNewComment(
+      req.user,
+      req.body.content,
+      res,
+      req.params.postId
+    );
   }
 
   async createLike(req, res) {
-    Post.createNewLike(req.user, res, req.params.postId);
+    PostLike.createLike(res, req.user, req.params.postId);
   }
 
   async createPost(req, res) {
-    Post.createNewPost(req.body, res, req.user.login, req.user.userId);
+    UserPost.createNewPost(req.body, res, req.user.login, req.user.userId);
   }
 
   async updatePost(req, res) {
-    Post.updatePost(req.body, res, req.params.postId);
-  }
-
-  async updatePostAdmin(req, res) {
-    throw Error("Not implemented");
+    if (req.user.role == "user") {
+      UserPost.updateUserPost(req.body, res, req.params.postId);
+    } else {
+    }
   }
 
   async deletePost(req, res) {
-    Post.deletePost(req, res, req.params.postId);
+    UserPost.deletePost(req, res, req.params.postId);
   }
 
   async deleteLike(req, res) {
-    Post.deleteLike(req.user, res);
+    PostLike.destroy(res, req.user);
   }
 }
 

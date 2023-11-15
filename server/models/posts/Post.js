@@ -1,9 +1,7 @@
-import DbCategory from "../db/scheme/categories.js";
-import DbPost from "../db/scheme/post.js";
-import DbPostCategory from "../db/scheme/posts-categories.js";
-import DbComments from "../db/scheme/comments.js";
-
-import PostLike from "./likes/PostLike.js";
+import DbCategory from "../../db/scheme/categories.js";
+import DbPost from "../../db/scheme/post.js";
+import DbPostCategory from "../../db/scheme/posts-categories.js";
+import DbComments from "../../db/scheme/comments.js";
 
 const PostsPerPage = 10;
 
@@ -37,10 +35,6 @@ class Post {
     } catch (error) {
       res.status(400).json(error);
     }
-  }
-
-  async getLikes(res, postId) {
-    await PostLike.getLikes(res, postId);
   }
 
   async getPostCategories(req, res, postId) {
@@ -88,11 +82,7 @@ class Post {
     }
   }
 
-  async createNewLike(user, res, postId) {
-    await PostLike.createLike(res, user, postId);
-  }
-
-  async createNewPost(req, res, authorLogin, authorId) {
+  async createNewPost(req, res, postData) {
     try {
       const categories = await DbCategory.findAll({
         where: { id: req.categories },
@@ -105,16 +95,9 @@ class Post {
       const categoryTitles = categories.map((category) => category.title);
       const titles = categoryTitles.join(", ");
 
-      const post = await DbPost.create({
-        authorId: authorId,
-        authorLogin: authorLogin,
-        title: req.title,
-        publishDate: new Date().toISOString().slice(0, 19).replace("T", " "),
-        isActive: true,
-        content: req.content,
-        categories: titles,
-      });
+      postData.categories = titles;
 
+      await DbPost.create(postData);
       await Promise.all(
         req.categories.map((categoryId) =>
           DbPostCategory.create({ postId: post.id, categoryId })
@@ -128,7 +111,7 @@ class Post {
     }
   }
 
-  async updatePost(req, res, postId) {
+  async updatePost(req, res, updatedPostData, postId) {
     try {
       const categories = await DbCategory.findAll({
         where: { id: req.categories },
@@ -141,12 +124,7 @@ class Post {
       const categoryTitles = categories.map((category) => category.title);
       const titles = categoryTitles.join(", ");
 
-      const updatedPostData = {
-        title: req.title,
-        publishDate: new Date().toISOString().slice(0, 19).replace("T", " "),
-        content: req.content,
-        categories: titles,
-      };
+      updatedPostData.categories = titles;
 
       const updatedPost = await DbPost.update(updatedPostData, {
         where: { id: postId },
@@ -175,10 +153,7 @@ class Post {
       const post = await DbPost.findByPk(postId);
 
       if (post) {
-        // Удаляем все связи категорий
         await post.setCategories([]);
-
-        // Удаляем сам пост
         await post.destroy();
 
         res.json("Success");
@@ -189,10 +164,6 @@ class Post {
       res.status(400).json(error);
     }
   }
-
-  async deleteLike(user, res) {
-    await PostLike.destroy(res, user);
-  }
 }
 
-export default new Post();
+export default Post;
