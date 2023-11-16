@@ -3,7 +3,7 @@
     -npm start
 
 Endpoints
-#####
+##
 
 # •Authentication module:<br>
     –POST - /api/auth/register- registration of a new user, required parameters are[login, password, fullName, email, avatar]<br>
