@@ -1,4 +1,4 @@
-import DbComments from "../db/scheme/comments.js";
+import DbComments from "../../db/scheme/comments.js";
 
 class Comment {
   async getCommentById(id, res) {
@@ -14,21 +14,16 @@ class Comment {
     }
   }
 
-  async changeComment(id, comment, res) {
+  async changeComment(id, res, newCommentData) {
     try {
       const existingComment = await DbComments.findByPk(id);
       if (!existingComment) {
         res.status(404).json('Not found');
         return;
       }
-  
-      const updateFields = {
-        content: comment.content,
-        date: new Date()
-      };
-  
-      await existingComment.update(updateFields);
-  
+
+      await existingComment.update(newCommentData);
+
       res.json('Success');
     } catch (err) {
       res.status(400).json(err);
@@ -52,4 +47,4 @@ class Comment {
   }
 }
 
-export default new Comment();
+export default Comment;

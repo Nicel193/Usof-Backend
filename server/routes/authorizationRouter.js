@@ -1,6 +1,6 @@
 import express from "express";
-import authController from "../controllers/auth.controller.js";
 
+import authController from "../controllers/authController.js";
 import authMiddleware from "../middleware/authMiddleware.js"
 import roleMiddleware from "../middleware/roleMiddleware.js";
 

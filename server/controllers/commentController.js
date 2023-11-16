@@ -1,29 +1,34 @@
-import Comment from "../models/Comment.js";
+import UserComment from "../models/comments/UserComment.js";
+import AdminComment from "../models/comments/AdminComment.js";
 import CommentLike from "../models/likes/CommentLike.js";
 
 class CommentController {
   async getCommentById(req, res) {
-    await Comment.getCommentById(req.params.commentId, res);
+    await UserComment.getCommentById(req.params.commentId, res);
   }
 
   async changeComment(req, res) {
-    await Comment.changeComment(req.params.commentId, req.body, res);
+    if (req.user.role == "user") {
+      await UserComment.updateUserComment(req.params.commentId, res, req.body);
+    } else {
+      await AdminComment.updateAdminComment(req.params.commentId, res, req.body);
+    }
   }
 
   async deleteComment(req, res) {
-    await Comment.deleteComment(req.params.commentId, res);
+    await UserComment.deleteComment(req.params.commentId, res);
   }
 
   async getAllLikes(req, res) {
-    CommentLike.getLikes(res, req.params.commentId);
+    await CommentLike.getLikes(res, req.params.commentId);
   }
 
   async setLike(req, res) {
-    CommentLike.createLike(res, req.user, req.params.commentId);
+    await ommentLike.createLike(res, req.user, req.params.commentId);
   }
 
   async deleteLike(req, res) {
-    CommentLike.destroy(res, req.user);
+    await CommentLike.destroy(res, req.user);
   }
 }
 

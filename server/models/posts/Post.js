@@ -6,15 +6,14 @@ import DbComments from "../../db/scheme/comments.js";
 const PostsPerPage = 10;
 
 class Post {
-  async getPosts(req, res, page) {
+  async getPosts(req, res, page, findRule) {
     try {
       const offset = (page - 1) * PostsPerPage;
 
-      const posts = await DbPost.findAll({
-        where: { isActive: true },
-        limit: PostsPerPage,
-        offset: offset,
-      });
+      findRule.limit = PostsPerPage;
+      findRule.offset = offset;
+
+      const posts = await DbPost.findAll(findRule);
 
       res.json(posts);
     } catch (error) {
@@ -69,7 +68,7 @@ class Post {
     try {
       await DbComments.create({
         loginOwner: user.login,
-        idOwner: user.userId,
+        idOwner: user.id,
         postId: postId,
         content: content,
         date: new Date(),
@@ -97,7 +96,7 @@ class Post {
 
       postData.categories = titles;
 
-      await DbPost.create(postData);
+      const post = await DbPost.create(postData);
       await Promise.all(
         req.categories.map((categoryId) =>
           DbPostCategory.create({ postId: post.id, categoryId })

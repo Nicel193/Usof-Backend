@@ -1,29 +1,17 @@
-import TokenService from "../services/tokenService.js"
+import userAuthService from "../services/userAuthService.js";
 
 export default function (req, res, next) {
-    try {
-        const authorizationHeader = req.headers.authorization;
-        if (!authorizationHeader) {
-            res.status(401).json('UnauthorizedError');
-            return;
-        }
+  try {
+    userAuthService.tryGetAuth(req);
 
-        const accessToken = authorizationHeader.split(' ')[1];
-        if (!accessToken) {
-            res.status(401).json('UnauthorizedError');
-            return;
-        }
-
-        const userData = TokenService.validateAccessToken(accessToken);
-        if (!userData) {
-            res.status(401).json('UnauthorizedError');
-            return;
-        }
-
-        req.user = userData;
-        next();
-    } catch (e) {
-        res.status(401).json('UnauthorizedError');
-        return;
+    if (!req.user) {
+      res.status(401).json("UnauthorizedError");
+      return;
     }
-};
+
+    next();
+  } catch (e) {
+    res.status(401).json("UnauthorizedError");
+    return;
+  }
+}

@@ -1,5 +1,5 @@
 import DbUser from "../db/scheme/user.js";
-import userDto from "../userDto.js";
+import userDto from "../services/userDto.js";
 
 class User {
   createNewUser(user, res) {
