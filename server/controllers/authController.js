@@ -1,8 +1,6 @@
 import Auth from "../models/Auth.js";
 import { validationResult } from "express-validator";
 
-
-
 class AuthController {
   async reqistration(req, res) {
     const errors = validationResult(req);
