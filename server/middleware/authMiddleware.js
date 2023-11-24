@@ -2,9 +2,9 @@ import userAuthService from "../services/userAuthService.js";
 
 export default function (req, res, next) {
   try {
-    userAuthService.tryGetAuth(req);
+    const isAuthUser = userAuthService.tryGetAuth(req);
 
-    if (!req.user) {
+    if (!isAuthUser) {
       res.status(401).json("UnauthorizedError");
       return;
     }

@@ -6,13 +6,16 @@ import userAuthService from "../services/userAuthService.js";
 class PostController {
   async getPosts(req, res) {
     const page = req.query.page ? Number(req.query.page) : 1;
+    const isAuthUser = userAuthService.tryGetAuth(req);
 
-    userAuthService.tryGetAuth(req);
-
-    if (!req.user) {
+    if (!isAuthUser) {
       await UserPost.getUserPost(req, res, page);
     } else {
-      await AdminPost.getAdminPost(req, res, page);
+      if (!req.user) {
+        await UserPost.getUserPost(req, res, page);
+      } else {
+        await AdminPost.getAdminPost(req, res, page);
+      }
     }
   }
 
