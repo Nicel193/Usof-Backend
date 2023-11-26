@@ -164,6 +164,7 @@ class Auth {
           email: userData.email,
           id: userData.id,
           login: userData.login,
+          roles: userData.roles
         });
       });
     } catch (err) {

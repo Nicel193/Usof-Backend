@@ -5,13 +5,19 @@ export default function (roles) {
       return;
     }
 
+    let found = false;
+
     roles.forEach((role) => {
-      if (role !== req.user.role) {
-        res.status(401).json("No rights");
+      if (role === req.user.role) {
+        found = true;
         return;
       }
     });
 
-    next();
+    if (found) {
+      next();
+    } else {
+      return res.status(403).json("No rights");
+    }
   };
 }
