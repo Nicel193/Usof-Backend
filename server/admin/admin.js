@@ -58,5 +58,5 @@ const adminRouter = AdminJSExpress.buildAuthenticatedRouter(admin, {
 
 export default {
   path: admin.options.rootPath,
-  router: adminRouter,
+  router: adminRouter
 };

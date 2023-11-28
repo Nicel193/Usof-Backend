@@ -9,9 +9,11 @@ class TokenService {
   generateTokens(user) {
     const payload = {
       id: user.id,
-      email: user.email,
+      fullName: user.fullName,
       login: user.login,
-      role: user.roles
+      email: user.email,
+      rating: user.rating,
+      roles: user.roles
     };
 
     const accessToken = jwt.sign(payload, JWT_ACCESS_SECRET, {

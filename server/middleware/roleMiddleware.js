@@ -8,7 +8,7 @@ export default function (roles) {
     let found = false;
 
     roles.forEach((role) => {
-      if (role === req.user.role) {
+      if (role === req.user.roles) {
         found = true;
         return;
       }
