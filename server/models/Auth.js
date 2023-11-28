@@ -28,14 +28,7 @@ class Auth {
         httpOnly: true,
       });
 
-      res.json({
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken,
-        login: user.login,
-        email: user.email,
-        id: createdUser.id,
-        roles: "user",
-      });
+      res.json(this.userDataDAO(tokens, userData));
     } catch (err) {
       res.status(400).json(err.message);
     }
@@ -65,15 +58,7 @@ class Auth {
           httpOnly: true,
         });
 
-        res.json({
-          accessToken: tokens.accessToken,
-          refreshToken: tokens.refreshToken,
-          login: userByLogin.login,
-          email: userByLogin.email,
-          id: userByLogin.id,
-          roles: userByLogin.roles,
-          isActivated: userByLogin.isActivated,
-        });
+        res.json(this.userDataDAO(tokens, userByLogin));
       } else {
         res.status(400).json("Incorrect password");
       }
@@ -158,18 +143,25 @@ class Auth {
           httpOnly: true,
         });
 
-        res.json({
-          accessToken: tokens.accessToken,
-          refreshToken: tokens.refreshToken,
-          email: userData.email,
-          id: userData.id,
-          login: userData.login,
-          roles: userData.roles
-        });
+        res.json(this.userDataDAO(tokens, userData));
       });
     } catch (err) {
       res.status(401).json("UnauthorizedError");
     }
+  }
+
+  userDataDAO(tokens, userData) {
+    return {
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+      fullName: userData.fullName,
+      login: userData.login,
+      email: userData.email,
+      id: userData.id,
+      rating: userData.rating,
+      roles: userData.roles,
+      isActivated: userData.isActivated
+    };
   }
 }
 
