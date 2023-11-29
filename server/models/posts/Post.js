@@ -2,6 +2,7 @@ import DbCategory from "../../db/scheme/categories.js";
 import DbPost from "../../db/scheme/post.js";
 import DbPostCategory from "../../db/scheme/posts-categories.js";
 import DbComments from "../../db/scheme/comments.js";
+import { where } from "sequelize";
 
 const PostsPerPage = 10;
 
@@ -19,6 +20,12 @@ class Post {
     } catch (error) {
       res.status(400).json(error);
     }
+  }
+
+  async getPostsByUserId(req, res, page, userId) {
+    await this.getPosts(req, res, page, {
+      where: { authorId: userId, isActive: true },
+    });
   }
 
   async getPostById(req, res, postId) {

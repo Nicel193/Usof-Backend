@@ -19,6 +19,13 @@ class PostController {
     }
   }
 
+  async getPostsByUserId(req, res) {
+    const page = req.query.page ? Number(req.query.page) : 1;
+    
+    // I can get unaktive posts
+    UserPost.getPostsByUserId(req, res, page, req.params.userId);
+  }
+
   async getPost(req, res) {
     await UserPost.getPostById(req, res, req.params.postId);
   }

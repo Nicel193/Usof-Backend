@@ -19,6 +19,7 @@ Endpoints
     –DELETE - /api/users/<user_id>- delete user<br>
 # •Post module:<br>
     –GET - /api/posts- get all posts.This endpoint doesn't require any role, it ispublic. If there are too many posts, you must implement pagination. Page size isup to you
+    –GET - /api/posts/:userId/user - get all user posts by userId.This endpoint doesn't require any role, it ispublic. If there are too many posts, you must implement pagination. Page size isup to you. `Return only active posts`
     –GET - /api/posts/<post_id>- get specified post data.Endpoint is public
     –GET - /api/posts/<post_id>/comments- get all comments for the specified post.Endpoint is public
     –POST - /api/posts/<post_id>/comments- create a new comment, required parameteris [content]
