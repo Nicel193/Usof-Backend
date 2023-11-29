@@ -5,25 +5,21 @@ import userAuthService from "../services/userAuthService.js";
 
 class PostController {
   async getPosts(req, res) {
-    const page = req.query.page ? Number(req.query.page) : 1;
     const isAuthUser = userAuthService.tryGetAuth(req);
 
     if (!isAuthUser) {
-      await UserPost.getUserPost(req, res, page);
+      await UserPost.getUserPost(req, res, req.query);
     } else {
       if (!req.user) {
-        await UserPost.getUserPost(req, res, page);
+        await UserPost.getUserPost(req, res, req.query);
       } else {
-        await AdminPost.getAdminPost(req, res, page);
+        await AdminPost.getAdminPost(req, res, req.query);
       }
     }
   }
 
-  async getPostsByUserId(req, res) {
-    const page = req.query.page ? Number(req.query.page) : 1;
-    
-    // I can get unaktive posts
-    UserPost.getPostsByUserId(req, res, page, req.params.userId);
+  async getPostsByUserId(req, res) {    
+    UserPost.getPostsByUserId(req, res, req.query, req.params.userId);
   }
 
   async getPost(req, res) {

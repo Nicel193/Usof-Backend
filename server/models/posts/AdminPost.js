@@ -1,8 +1,8 @@
 import Post from "./Post.js";
 
 class AdminPost extends Post {
-  async getAdminPost(req, res, page) {
-    await super.getPosts(req, res, page, {});
+  async getAdminPost(req, res, query) {
+    await super.getPosts(req, res, query, {});
   }
 
   async updateUserPost(req, res, postId) {

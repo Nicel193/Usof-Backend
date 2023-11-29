@@ -2,12 +2,60 @@ import DbCategory from "../../db/scheme/categories.js";
 import DbPost from "../../db/scheme/post.js";
 import DbPostCategory from "../../db/scheme/posts-categories.js";
 import DbComments from "../../db/scheme/comments.js";
-import { where } from "sequelize";
+import { Op } from "sequelize";
 
 const PostsPerPage = 10;
 
 class Post {
-  async getPosts(req, res, page, findRule) {
+  async getPosts(req, res, query, findRule) {
+    const page = query.page ? Number(req.query.page) : 1;
+    const sortType = query.sort || "date";
+    const sortOrder = query.order || "desc";
+    const category = req.query.category;
+    const startDate = req.query.startDate;
+    const endDate = req.query.endDate;
+
+    switch (sortType) {
+      case "likes":
+        // findRule.order = [["likesCount", sortOrder.toUpperCase()]];
+        break;
+      case "date":
+        findRule.order = [["publishDate", sortOrder.toUpperCase()]];
+        break;
+      default:
+        findRule.order = [["publishDate", "DESC"]];
+        break;
+    }
+
+    if (category) {
+      findRule.include = [
+        {
+          model: DbCategory,
+          where: { id: category },
+        },
+      ];
+    }
+
+    if (startDate && endDate) {
+      findRule.where = {
+        publishDate: {
+          [Op.between]: [startDate, endDate],
+        },
+      };
+    } else if (startDate) {
+      findRule.where = {
+        publishDate: {
+          [Op.gte]: startDate,
+        },
+      };
+    } else if (endDate) {
+      findRule.where = {
+        publishDate: {
+          [Op.lte]: endDate,
+        },
+      };
+    }
+
     try {
       const offset = (page - 1) * PostsPerPage;
 
@@ -22,8 +70,8 @@ class Post {
     }
   }
 
-  async getPostsByUserId(req, res, page, userId) {
-    await this.getPosts(req, res, page, {
+  async getPostsByUserId(req, res, query, userId) {
+    await this.getPosts(req, res, query, {
       where: { authorId: userId, isActive: true },
     });
   }

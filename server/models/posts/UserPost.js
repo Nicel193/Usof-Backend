@@ -12,8 +12,8 @@ class UserPost extends Post {
     });
   }
 
-  async getUserPost(req, res, page) {
-    await super.getPosts(req, res, page, {
+  async getUserPost(req, res, query) {
+    await super.getPosts(req, res, query, {
       where: { isActive: true }
     })
   }
