@@ -7,15 +7,12 @@ import { Op } from "sequelize";
 const PostsPerPage = 10;
 
 class Post {
-
-  //TODO: Deligate sorting and filtering logic
-  async getPosts(req, res, query, findRule) {
-    const page = query.page ? Number(req.query.page) : 1;
+  sortAndFilter(query, findRule) {
     const sortType = query.sort || "date";
     const sortOrder = query.order || "desc";
-    const category = req.query.category;
-    const startDate = req.query.startDate;
-    const endDate = req.query.endDate;
+    const category = query.category;
+    const startDate = query.startDate;
+    const endDate = query.endDate;
 
     switch (sortType) {
       case "likes":
@@ -57,16 +54,28 @@ class Post {
         },
       };
     }
+  }
+
+  //TODO: Deligate sorting and filtering logic
+  async getPosts(req, res, query, findRule) {
+    const page = query.page ? Number(req.query.page) : 1;
+
+    this.sortAndFilter(query, findRule);
 
     try {
+      const postsCount = await DbPost.count(findRule);
       const offset = (page - 1) * PostsPerPage;
 
       findRule.limit = PostsPerPage;
       findRule.offset = offset;
 
       const posts = await DbPost.findAll(findRule);
+      const totalPages = Math.ceil(postsCount / PostsPerPage);
 
-      res.json(posts);
+      res.json({
+        posts: posts,
+        totalPages: totalPages,
+      });
     } catch (error) {
       res.status(400).json(error);
     }
