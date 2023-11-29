@@ -5,7 +5,7 @@ class CategoryController {
         Category.createCategory(req.body, res);
     }   
     getAllCategorise(req, res) {
-        Category.getAllCategory(res);
+        Category.getAllCategories(res);
     }
     getCategoryById(req, res) {
         Category.getCategoryById(req.params.categoryId, res);

@@ -1,11 +1,12 @@
 import { Like } from "./Like.js";
 
 class PostLike extends Like {
-  async createLike(res, user, id) {
+  async createLike(res, user, id, likeType) {
     await super.create(res, {
       login: user.login,
       idPost: id,
-      likeType: "post",
+      likeType: likeType,
+      likeGroup: "post"
     });
   }
 

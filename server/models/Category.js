@@ -67,7 +67,7 @@ class Categories {
     }
   }
 
-  async changeCategories(id, content, res) {
+  async changeCategory(id, content, res) {
     try {
       const [updatedRowsCount] = await DbCategory.update(content, {
         where: { id },
@@ -85,7 +85,7 @@ class Categories {
     }
   }
 
-  async deleteCategories(id, res) {
+  async deleteCategory(id, res) {
     try {
       const deletedRowCount = await DbCategory.destroy({ where: { id } });
 

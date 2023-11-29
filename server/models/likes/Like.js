@@ -47,6 +47,10 @@ class Like {
       res.status(400).json(error);
     }
   }
+
+  async getLikesCount(res){
+    
+  }
 }
 
 export { Like };

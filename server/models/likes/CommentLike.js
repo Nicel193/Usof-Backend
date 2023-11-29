@@ -5,7 +5,8 @@ class CommentLike extends Like {
     super.create(res, {
       login: user.login,
       idComment: id,
-      likeType: "comment",
+      likeType: "like",
+      likeGroup: "comment"
     });
   }
 

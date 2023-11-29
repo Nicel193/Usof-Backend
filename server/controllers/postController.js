@@ -18,7 +18,7 @@ class PostController {
     }
   }
 
-  async getPostsByUserId(req, res) {    
+  async getPostsByUserId(req, res) {
     UserPost.getPostsByUserId(req, res, req.query, req.params.userId);
   }
 
@@ -48,7 +48,7 @@ class PostController {
   }
 
   async createLike(req, res) {
-    await PostLike.createLike(res, req.user, req.params.postId);
+    await PostLike.createLike(res, req.user, req.params.postId, "like");
   }
 
   async createPost(req, res) {

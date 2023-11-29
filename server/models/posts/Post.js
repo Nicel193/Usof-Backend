@@ -7,6 +7,8 @@ import { Op } from "sequelize";
 const PostsPerPage = 10;
 
 class Post {
+
+  //TODO: Deligate sorting and filtering logic
   async getPosts(req, res, query, findRule) {
     const page = query.page ? Number(req.query.page) : 1;
     const sortType = query.sort || "date";

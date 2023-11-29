@@ -27,6 +27,10 @@ const DbLikes = db.define(
       allowNull: true,
     },
     likeType: {
+      type: DataTypes.ENUM("like", "dislike"),
+      allowNull: false,
+    },
+    likeGroup: {
       type: DataTypes.ENUM("post", "comment"),
       allowNull: false,
     },
