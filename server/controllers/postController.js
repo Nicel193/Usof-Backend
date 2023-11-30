@@ -80,7 +80,7 @@ class PostController {
   }
 
   async deleteLike(req, res) {
-    await PostLike.destroy(res, req.user);
+    await PostLike.destroyLike(res, req.user, req.params.postId);
   }
 }
 

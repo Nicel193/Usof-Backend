@@ -11,11 +11,23 @@ class PostLike extends Like {
       likeGroup: "post",
     }
 
-    await super.create(res, likeData);
+    const findLikeRule = {
+      where: { login: likeData.login, idPost: likeData.idPost },
+    };
+
+    await super.create(res, likeData, findLikeRule);
   }
 
   async getLikes(res, id) {
     await super.getAll(res, { where: { idPost: id } });
+  }
+
+  async destroyLike(res, user, postId) {
+    const findLikeRule = {
+      where: { login: user.login, idPost: postId },
+    };
+
+    await super.destroy(res, findLikeRule);
   }
 }
 

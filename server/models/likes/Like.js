@@ -1,11 +1,7 @@
 import DbLikes from "../../db/scheme/likes.js";
 
 class Like {
-  async create(res, likeData) {
-    const findLikeRule = {
-      where: { login: likeData.login, idPost: likeData.idPost },
-    };
-
+  async create(res, likeData, findLikeRule) {
     try {
       if (await DbLikes.findOne(findLikeRule)) {
         await this.update(res, likeData, findLikeRule);
@@ -40,11 +36,9 @@ class Like {
     }
   }
 
-  async destroy(res, user) {
+  async destroy(res, findRule) {
     try {
-      const existingLike = await DbLikes.findOne({
-        where: { login: user.login },
-      });
+      const existingLike = await DbLikes.findOne(findRule);
 
       if (!existingLike) {
         res.status(404).json("Not found");
@@ -58,8 +52,6 @@ class Like {
       res.status(400).json(error);
     }
   }
-
-  async getLikesCount(res) {}
 }
 
 export { Like };

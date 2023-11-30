@@ -2,6 +2,7 @@ import DbCategory from "../../db/scheme/categories.js";
 import DbPost from "../../db/scheme/post.js";
 import DbPostCategory from "../../db/scheme/posts-categories.js";
 import DbComments from "../../db/scheme/comments.js";
+import PostLike from "../likes/PostLike.js";
 import { Op } from "sequelize";
 
 const PostsPerPage = 10;
