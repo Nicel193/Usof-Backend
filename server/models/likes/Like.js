@@ -2,20 +2,31 @@ import DbLikes from "../../db/scheme/likes.js";
 
 class Like {
   async create(res, likeData) {
+    const findLikeRule = {
+      where: { login: likeData.login, idPost: likeData.idPost },
+    };
+
     try {
+      if (await DbLikes.findOne(findLikeRule)) {
+        await this.update(res, likeData, findLikeRule);
+        return;
+      }
+
       await DbLikes.create(likeData);
 
       res.json("Success");
     } catch (error) {
-      if (error.name === "SequelizeUniqueConstraintError") {
-        res
-          .status(400)
-          .json("Duplicate entry. This login has already liked this post");
+      res.status(400).json(error.message);
+    }
+  }
 
-        return;
-      }
+  async update(res, likeData, findRule) {
+    try {
+      await DbLikes.update({ likeType: likeData.likeType }, findRule);
 
-      res.status(500).json("Internal Server Error");
+      res.json("Like data updated");
+    } catch (error) {
+      res.status(400).json(error.message);
     }
   }
 
@@ -32,7 +43,7 @@ class Like {
   async destroy(res, user) {
     try {
       const existingLike = await DbLikes.findOne({
-        where: { login: user.login }
+        where: { login: user.login },
       });
 
       if (!existingLike) {
@@ -48,9 +59,7 @@ class Like {
     }
   }
 
-  async getLikesCount(res){
-    
-  }
+  async getLikesCount(res) {}
 }
 
 export { Like };

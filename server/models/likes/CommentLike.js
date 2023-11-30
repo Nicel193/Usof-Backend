@@ -1,13 +1,16 @@
+import DbComments from "../../db/scheme/comments.js";
 import { Like } from "./Like.js";
 
 class CommentLike extends Like {
-  async createLike(res, user, id) {
-    super.create(res, {
+  async createLike(res, user, id, likeType) {
+    const likeData = {
       login: user.login,
       idComment: id,
-      likeType: "like",
+      likeType: likeType,
       likeGroup: "comment"
-    });
+    };
+
+    await super.create(res, likeData);
   }
 
   async getLikes(res, id) {

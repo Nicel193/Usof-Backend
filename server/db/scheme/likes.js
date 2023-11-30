@@ -16,15 +16,22 @@ const DbLikes = db.define(
     login: {
       type: DataTypes.STRING(31),
       allowNull: false,
-      unique: true,
     },
     idPost: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      references: {
+        model: DbPost,
+        key: "id",
+      },
     },
     idComment: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      references: {
+        model: DbComments,
+        key: "id",
+      },
     },
     likeType: {
       type: DataTypes.ENUM("like", "dislike"),
@@ -37,7 +44,7 @@ const DbLikes = db.define(
   },
   {
     tableName: "likes",
-    timestamps: false
+    timestamps: false,
   }
 );
 

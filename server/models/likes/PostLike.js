@@ -1,13 +1,17 @@
 import { Like } from "./Like.js";
+import DbPost from "../../db/scheme/post.js";
+import DbLikes from "../../db/scheme/likes.js";
 
 class PostLike extends Like {
   async createLike(res, user, id, likeType) {
-    await super.create(res, {
+    const likeData = {
       login: user.login,
       idPost: id,
       likeType: likeType,
-      likeGroup: "post"
-    });
+      likeGroup: "post",
+    }
+
+    await super.create(res, likeData);
   }
 
   async getLikes(res, id) {

@@ -48,7 +48,19 @@ class PostController {
   }
 
   async createLike(req, res) {
-    await PostLike.createLike(res, req.user, req.params.postId, "like");
+    if (
+      req.query.type &&
+      (req.query.type === "like" || req.query.type === "dislike")
+    ) {
+      await PostLike.createLike(
+        res,
+        req.user,
+        req.params.postId,
+        req.query.type
+      );
+    } else {
+      res.status(400).send("Invalid like parameter");
+    }
   }
 
   async createPost(req, res) {
