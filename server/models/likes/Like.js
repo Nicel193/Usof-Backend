@@ -28,9 +28,13 @@ class Like {
 
   async getAll(res, findRule) {
     try {
+      findRule.where.likeType = "like";
       const likes = await DbLikes.findAll(findRule);
 
-      res.status(200).json(likes);
+      findRule.where.likeType = "dislike";
+      const dislikes = await DbLikes.findAll(findRule);
+
+      res.status(200).json({ likes: likes, dislikes: dislikes });
     } catch (error) {
       res.status(400).json(error);
     }
