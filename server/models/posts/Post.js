@@ -151,46 +151,40 @@ class Post {
   async createNewPost(req, res, postData) {
     try {
       const categories = await DbCategory.findAll({
-        where: { id: req.categories },
+        where: { title: req.categories },
       });
 
       if (categories.length !== req.categories.length) {
-        return res.status(400).json("Invalid category ids");
+        return res.status(400).json("Invalid categories");
       }
 
-      const categoryTitles = categories.map((category) => category.title);
-      const titles = categoryTitles.join(", ");
-
-      postData.categories = titles;
+      postData.categories = req.categories.join(", ");
 
       const post = await DbPost.create(postData);
       await Promise.all(
-        req.categories.map((categoryId) =>
-          DbPostCategory.create({ postId: post.id, categoryId })
+        categories.map((category) =>
+          DbPostCategory.create({ postId: post.id, categoryId: category.id })
         )
       );
 
       res.json("Success");
     } catch (error) {
       console.error(error);
-      res.status(500).json("Internal Server Error");
+      res.status(500).json("Internal server error");
     }
   }
 
   async updatePost(req, res, updatedPostData, postId) {
     try {
       const categories = await DbCategory.findAll({
-        where: { id: req.categories },
+        where: { title: req.categories },
       });
 
       if (categories.length !== req.categories.length) {
         return res.status(400).json("Invalid category ids");
       }
 
-      const categoryTitles = categories.map((category) => category.title);
-      const titles = categoryTitles.join(", ");
-
-      updatedPostData.categories = titles;
+      updatedPostData.categories = req.categories.join(", ");
 
       const updatedPost = await DbPost.update(updatedPostData, {
         where: { id: postId },
@@ -200,7 +194,7 @@ class Post {
         const post = await DbPost.findByPk(postId);
 
         if (post) {
-          await post.setCategories(req.categories);
+          await post.setCategories(categories.map((category) => category.id));
 
           res.json("Success");
         } else {

@@ -12,6 +12,7 @@ const DbCategory = db.define(
     title: {
       type: DataTypes.STRING(31),
       allowNull: false,
+      unique: true
     },
     description: {
       type: DataTypes.STRING(255),
