@@ -2,66 +2,15 @@ import DbCategory from "../../db/scheme/categories.js";
 import DbPost from "../../db/scheme/post.js";
 import DbPostCategory from "../../db/scheme/posts-categories.js";
 import DbComments from "../../db/scheme/comments.js";
-import PostLike from "../likes/PostLike.js";
-import { Op } from "sequelize";
+import { sortAndFilter } from "../../services/sortService.js";
 
 const PostsPerPage = 10;
 
 class Post {
-  sortAndFilter(query, findRule) {
-    const sortType = query.sort || "date";
-    const sortOrder = query.order || "desc";
-    const category = query.category;
-    const startDate = query.startDate;
-    const endDate = query.endDate;
-
-    switch (sortType) {
-      case "likes":
-        // findRule.order = [["likesCount", sortOrder.toUpperCase()]];
-        break;
-      case "date":
-        findRule.order = [["publishDate", sortOrder.toUpperCase()]];
-        break;
-      default:
-        findRule.order = [["publishDate", "DESC"]];
-        break;
-    }
-
-    if (category) {
-      findRule.include = [
-        {
-          model: DbCategory,
-          where: { id: category },
-        },
-      ];
-    }
-
-    if (startDate && endDate) {
-      findRule.where = {
-        publishDate: {
-          [Op.between]: [startDate, endDate],
-        },
-      };
-    } else if (startDate) {
-      findRule.where = {
-        publishDate: {
-          [Op.gte]: startDate,
-        },
-      };
-    } else if (endDate) {
-      findRule.where = {
-        publishDate: {
-          [Op.lte]: endDate,
-        },
-      };
-    }
-  }
-
-  //TODO: Deligate sorting and filtering logic
   async getPosts(req, res, query, findRule) {
     const page = query.page ? Number(req.query.page) : 1;
 
-    this.sortAndFilter(query, findRule);
+    sortAndFilter(query, findRule);
 
     try {
       const postsCount = await DbPost.count(findRule);
@@ -119,11 +68,14 @@ class Post {
     }
   }
 
-  async getComments(res, postId) {
+  async getComments(res, postId, query) {
     try {
-      const likes = await DbComments.findAll({
+      const findRule = {
         where: { postId: postId },
-      });
+        order: [['date', 'DESC']]
+      };
+
+      const likes = await DbComments.findAll(findRule);
 
       res.status(200).json(likes);
     } catch (error) {

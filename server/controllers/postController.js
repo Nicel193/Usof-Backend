@@ -31,7 +31,7 @@ class PostController {
   }
 
   async getComments(req, res) {
-    await UserPost.getComments(res, req.params.postId);
+    await UserPost.getComments(res, req.params.postId, req.query);
   }
 
   async getPostCategories(req, res) {
