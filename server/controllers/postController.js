@@ -68,7 +68,7 @@ class PostController {
   }
 
   async updatePost(req, res) {
-    if (req.user.role == "user") {
+    if (req.user.roles == "user") {
       await UserPost.updateUserPost(req.body, res, req.params.postId);
     } else {
       await AdminPost.updateUserPost(req.body, res, req.params.postId);
