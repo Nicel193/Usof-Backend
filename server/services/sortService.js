@@ -1,3 +1,4 @@
+import DbCategory from "../db/scheme/categories.js";
 import { Op } from "sequelize";
 
 export function sortAndFilter(query, findRule) {
