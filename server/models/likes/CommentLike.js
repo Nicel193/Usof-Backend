@@ -10,11 +10,23 @@ class CommentLike extends Like {
       likeGroup: "comment"
     };
 
-    await super.create(res, likeData);
+    const findLikeRule = {
+      where: { login: likeData.login, idComment: likeData.idComment },
+    };
+
+    await super.create(res, likeData, findLikeRule);
   }
 
   async getLikes(res, id) {
     await super.getAll(res, { where: { idComment: id } });
+  }
+
+  async destroyLike(res, user, id) {
+    const findLikeRule = {
+      where: { login: user.login, idComment: id },
+    };
+
+    await super.destroy(res, findLikeRule);
   }
 }
 

@@ -24,11 +24,23 @@ class CommentController {
   }
 
   async setLike(req, res) {
-    await ommentLike.createLike(res, req.user, req.params.commentId);
+    if (
+      req.query.type &&
+      (req.query.type === "like" || req.query.type === "dislike")
+    ) {
+      await CommentLike.createLike(
+        res,
+        req.user,
+        req.params.commentId,
+        req.query.type
+      );
+    } else {
+      res.status(400).send("Invalid like parameter");
+    }
   }
 
   async deleteLike(req, res) {
-    await CommentLike.destroy(res, req.user);
+    await CommentLike.destroyLike(res, req.user, req.params.commentId);
   }
 }
 

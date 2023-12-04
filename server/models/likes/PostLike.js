@@ -22,9 +22,9 @@ class PostLike extends Like {
     await super.getAll(res, { where: { idPost: id } });
   }
 
-  async destroyLike(res, user, postId) {
+  async destroyLike(res, user, id) {
     const findLikeRule = {
-      where: { login: user.login, idPost: postId },
+      where: { login: user.login, idPost: id },
     };
 
     await super.destroy(res, findLikeRule);
