@@ -18,7 +18,7 @@ class UserController {
   }
 
   async addAvatar(req, res) {
-    throw new Error();
+    User.addAvatar(req.user.login, req.file.filename, res);
   }
 
   async deleteUser(req, res) {

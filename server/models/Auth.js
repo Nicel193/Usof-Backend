@@ -160,7 +160,8 @@ class Auth {
       id: userData.id,
       rating: userData.rating,
       roles: userData.roles,
-      isActivated: userData.isActivated
+      isActivated: userData.isActivated,
+      profilePicture: userData.profilePicture,
     };
   }
 }

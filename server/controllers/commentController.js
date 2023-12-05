@@ -8,7 +8,7 @@ class CommentController {
   }
 
   async changeComment(req, res) {
-    if (req.user.role == "user") {
+    if (req.user.roles === "user") {
       await UserComment.updateUserComment(req.params.commentId, res, req.body);
     } else {
       await AdminComment.updateAdminComment(req.params.commentId, res, req.body);

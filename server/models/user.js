@@ -1,5 +1,8 @@
 import DbUser from "../db/scheme/user.js";
+import { upload } from "../services/storageService.js";
 import userDto from "../services/userDto.js";
+
+
 
 class User {
   createNewUser(user, res) {
@@ -44,10 +47,10 @@ class User {
     }
   }
 
-  async addAvatar(login, path, res) {
+  async addAvatar(login, fileName, res) {
     try {
       const [updatedRowsCount] = await DbUser.update(
-        { profilePicture: path },
+        { profilePicture: fileName },
         { where: { login } }
       );
 
@@ -56,7 +59,7 @@ class User {
         return;
       }
 
-      res.json(path);
+      res.json(fileName);
     } catch (err) {
       res.status(400).json(err.message);
     }
