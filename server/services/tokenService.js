@@ -13,7 +13,8 @@ class TokenService {
       login: user.login,
       email: user.email,
       rating: user.rating,
-      roles: user.roles
+      roles: user.roles,
+      profilePicture: user.profilePicture,
     };
 
     const accessToken = jwt.sign(payload, JWT_ACCESS_SECRET, {

@@ -46,8 +46,11 @@ class User {
 
   async addAvatar(login, path, res) {
     try {
-      const [updatedRowsCount] = await DbUser.update({ profilePicture: path }, { where: { login } });
-      
+      const [updatedRowsCount] = await DbUser.update(
+        { profilePicture: path },
+        { where: { login } }
+      );
+
       if (updatedRowsCount === 0) {
         res.status(400).json("User not found");
         return;
@@ -61,7 +64,6 @@ class User {
 
   async updateUser(user, authId, id, res) {
     try {
-
       if (authId != id) {
         res.status(400).json("not available");
         return;
