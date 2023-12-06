@@ -1,5 +1,11 @@
 import DbCategory from "../db/scheme/categories.js";
+import DbLikes from "../db/scheme/likes.js";
+import DbPost from "../db/scheme/post.js";
 import { Op } from "sequelize";
+import db from "../db/db.js";
+
+const subQuery =
+  '(SELECT COUNT(id) FROM Likes WHERE Likes.idPost = Post.id AND Likes.likeType = "like" AND Likes.likeGroup = "post")';
 
 export function sortAndFilter(query, findRule) {
   const sortType = query.sort || "date";
@@ -10,7 +16,24 @@ export function sortAndFilter(query, findRule) {
 
   switch (sortType) {
     case "likes":
-      // findRule.order = [["likesCount", sortOrder.toUpperCase()]];
+      findRule = {
+        attributes: [
+          'id',
+          [db.fn('COUNT', db.col('likes.id')), 'likesCount']
+        ],
+        include: [{
+          model: DbLikes,
+          as: 'Likes',
+          attributes: [],
+          where: {
+            likeType: 'like',
+            likeGroup: 'post'
+          },
+          required: false
+        }],
+        group: ['posts.id'],
+        order: [[db.literal('likesCount'), sortOrder.toUpperCase()]]
+      };
       break;
     case "date":
       findRule.order = [["publishDate", sortOrder.toUpperCase()]];
@@ -48,4 +71,6 @@ export function sortAndFilter(query, findRule) {
       },
     };
   }
+
+  return findRule;
 }

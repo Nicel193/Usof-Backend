@@ -4,7 +4,6 @@ import { DataTypes } from "sequelize";
 import DbPost from "./post.js";
 import DbComments from "./comments.js";
 
-//TODO:Add date
 const DbLikes = db.define(
   "Like",
   {
@@ -50,6 +49,7 @@ const DbLikes = db.define(
 
 DbLikes.belongsTo(DbPost, { foreignKey: "idPost" });
 DbLikes.belongsTo(DbComments, { foreignKey: "idComment" });
+DbPost.hasMany(DbLikes, { foreignKey: 'idPost' });
 
 DbLikes.sync()
   .then(() => {

@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import cookies from "cookie-parser";
 import admin from "./server/admin/admin.js";
 import avatarsPath from "./server/services/avatarService.js";
@@ -12,28 +13,17 @@ import commentRouter from "./server/routes/commentRouter.js";
 const PORT = 3001;
 const app = express();
 
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true,
+};
+
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookies());
 app.use(admin.path, admin.router);
-app.use('/avatars', express.static(avatarsPath));
-
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-
-  if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-    res.header('Vary', 'Origin');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
+app.use("/avatars", express.static(avatarsPath));
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);

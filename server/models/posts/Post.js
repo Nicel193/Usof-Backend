@@ -13,7 +13,7 @@ class Post {
   async getPosts(req, res, query, findRule) {
     const page = query.page ? Number(req.query.page) : 1;
 
-    sortAndFilter(query, findRule);
+    findRule = sortAndFilter(query, findRule);
 
     try {
       const postsCount = await DbPost.count(findRule);
@@ -30,6 +30,7 @@ class Post {
         totalPages: totalPages,
       });
     } catch (error) {
+      console.log(error);
       res.status(400).json(error);
     }
   }
