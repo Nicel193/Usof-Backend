@@ -13,7 +13,7 @@ class Post {
   async getPosts(req, res, query, findRule) {
     const page = query.page ? Number(req.query.page) : 1;
 
-    findRule = sortAndFilter(query, findRule);
+    sortAndFilter(query, findRule);
 
     try {
       const postsCount = await DbPost.count(findRule);

@@ -16,24 +16,35 @@ export function sortAndFilter(query, findRule) {
 
   switch (sortType) {
     case "likes":
-      findRule = {
-        attributes: [
-          'id',
-          [db.fn('COUNT', db.col('likes.id')), 'likesCount']
+      const likeType =  sortOrder.toUpperCase() == "DESC" ? "\"like\"" : "\"dislike\"";
+      findRule.attributes = [
+        "id",
+        "authorId",
+        "authorLogin",
+        "title",
+        "publishDate",
+        "isActive",
+        "content",
+        "categories",
+        [
+          db.literal(
+            `(SELECT COUNT(*) FROM likes WHERE likes.idPost = Post.id AND likes.likeType = ${likeType} AND likes.likeGroup = "post")`
+          ),
+          "likesCount",
         ],
-        include: [{
-          model: DbLikes,
-          as: 'Likes',
-          attributes: [],
-          where: {
-            likeType: 'like',
-            likeGroup: 'post'
-          },
-          required: false
-        }],
-        group: ['posts.id'],
-        order: [[db.literal('likesCount'), sortOrder.toUpperCase()]]
-      };
+      ];
+      findRule.group = [
+        "id",
+        "authorId",
+        "authorLogin",
+        "title",
+        "publishDate",
+        "isActive",
+        "content",
+        "categories",
+        "likesCount"
+      ];
+      findRule.order = [[db.literal("likesCount"), "DESC"]];
       break;
     case "date":
       findRule.order = [["publishDate", sortOrder.toUpperCase()]];
@@ -71,6 +82,4 @@ export function sortAndFilter(query, findRule) {
       },
     };
   }
-
-  return findRule;
 }
