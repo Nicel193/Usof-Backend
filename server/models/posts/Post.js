@@ -96,6 +96,8 @@ class Post {
         date: new Date(),
       });
 
+      await User.updateRating(user.id);
+
       res.json("Success");
     } catch (error) {
       console.log(error);
