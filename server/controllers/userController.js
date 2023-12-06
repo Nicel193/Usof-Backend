@@ -18,6 +18,11 @@ class UserController {
   }
 
   async addAvatar(req, res) {
+    if (!req.file || !req.user) {
+      res.status(400).json("Not found");
+      return;
+    }
+
     User.addAvatar(req.user.login, req.file.filename, res);
   }
 

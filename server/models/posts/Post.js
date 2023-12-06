@@ -2,6 +2,9 @@ import DbCategory from "../../db/scheme/categories.js";
 import DbPost from "../../db/scheme/post.js";
 import DbPostCategory from "../../db/scheme/posts-categories.js";
 import DbComments from "../../db/scheme/comments.js";
+
+import User from "../User.js";
+
 import { sortAndFilter } from "../../services/sortService.js";
 
 const PostsPerPage = 10;
@@ -72,7 +75,7 @@ class Post {
     try {
       const findRule = {
         where: { postId: postId },
-        order: [['date', 'DESC']]
+        order: [["date", "DESC"]],
       };
 
       const likes = await DbComments.findAll(findRule);
@@ -118,6 +121,8 @@ class Post {
           DbPostCategory.create({ postId: post.id, categoryId: category.id })
         )
       );
+
+      await User.updateRating(postData.authorId);
 
       res.json("Success");
     } catch (error) {

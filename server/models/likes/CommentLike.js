@@ -1,5 +1,7 @@
 import DbComments from "../../db/scheme/comments.js";
+import Comment from "../comments/Comment.js"
 import { Like } from "./Like.js";
+
 
 class CommentLike extends Like {
   async createLike(res, user, id, likeType) {

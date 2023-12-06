@@ -2,8 +2,6 @@ import DbUser from "../db/scheme/user.js";
 import { upload } from "../services/storageService.js";
 import userDto from "../services/userDto.js";
 
-
-
 class User {
   createNewUser(user, res) {
     let sqlUser = {
@@ -93,6 +91,22 @@ class User {
       }
 
       res.json("Success");
+    } catch (err) {
+      res.status(400).json(err.message);
+    }
+  }
+
+  async updateRating(userId) {
+    try {
+      const user = await DbUser.findByPk(userId);
+
+      if (!user) {
+        throw new Error("User is not found");
+      }
+      
+      user.rating += 1;
+
+      await user.save();
     } catch (err) {
       res.status(400).json(err.message);
     }
